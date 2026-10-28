@@ -4,7 +4,7 @@
 
 ## 현재 상태
 
-2026-10-28 기준 **초기 문서만 생성했습니다.** 애플리케이션, 빌드 구성, 데이터베이스, 정적 분석, AI 연동은 구현되지 않았습니다. 실행 가능한 서비스나 실행 명령은 아직 없습니다. 로컬 Git 저장소를 초기화하고 공개 원격 저장소 `https://github.com/Limpos1/CodeSentinel`을 연결했습니다.
+2026-10-28 기준 **Spring Boot 기본 프로젝트를 생성했습니다.** Java 21, Spring Boot 4.1.2, Gradle Wrapper 9.8.2를 사용합니다. 기본 기동과 테스트 결과는 [진행 상태](docs/PROGRESS.md)에 기록합니다. 입력 화면, 저장소 수집, 데이터베이스, 정적 분석, AI 연동은 아직 구현하지 않았습니다.
 
 ## 계획된 기술 스택
 
@@ -19,7 +19,7 @@
 | 배포 | Docker, 클라우드 서버 |
 | 개발 환경 | Windows, IntelliJ IDEA, Codex |
 
-버전과 의존성은 다음 단계에서 호환성을 확인하여 결정합니다. 스택 변경은 이유와 장단점을 설명하고 사용자 승인을 받습니다.
+기본 의존성은 Web MVC, Thymeleaf, Validation과 각 테스트 지원입니다. 스택 변경은 이유와 장단점을 설명하고 사용자 승인을 받습니다.
 
 ## MVP 범위 — 모두 계획
 
@@ -38,6 +38,13 @@
 CodeSentinel/
 ├── README.md
 ├── AGENTS.md
+├── build.gradle
+├── settings.gradle
+├── gradlew / gradlew.bat
+├── gradle/wrapper/
+├── src/main/java/com/codesentinel/CodeSentinelApplication.java
+├── src/main/resources/application.properties
+├── src/test/java/com/codesentinel/CodeSentinelApplicationTests.java
 └── docs/
     ├── ARCHITECTURE.md
     ├── DATABASE.md
@@ -51,19 +58,38 @@ CodeSentinel/
 - [설계 결정](docs/DECISIONS.md): 합의한 내용과 미결정 사항
 - [진행 상태](docs/PROGRESS.md): 완료, 미구현, 검증 결과, 다음 단계
 
-## 다음 단계: Spring Boot 프로젝트 생성 준비
+## 개발 환경과 실행
 
-사용자 확인 후 다음 사항을 점검합니다. Git 2.53.0.windows.3 설치를 확인했으며, 그 외 도구 설치 여부는 아직 확인하지 않았습니다.
+JDK 21과 Git이 필요합니다. Gradle은 따로 설치하지 않고 저장소의 Wrapper를 사용합니다. 첫 빌드에는 의존성 다운로드를 위한 인터넷 연결이 필요합니다.
 
-1. JDK 21 설치 및 `java -version`, `javac -version`, `JAVA_HOME` 확인
-2. Git 설치 및 `git --version` 확인, IntelliJ IDEA의 Project SDK를 Java 21로 설정
-3. Spring Boot와 Gradle의 Java 21 호환 버전 확인, Gradle Wrapper 사용 계획 확정
-4. 프로젝트 식별자 제안: 이름 `CodeSentinel`, artifact `codesentinel`, group 및 Java package는 사용자 확인 후 확정
-5. 최소 의존성 제안: Spring Web, Thymeleaf, Validation, Spring Boot 테스트 지원. PostgreSQL·분석·AI 연동 의존성은 해당 단계에서 검토
-6. 생성 시 기존 문서를 보존하고 Gradle Wrapper 및 최소 소스만 추가
-7. 생성 후 테스트와 기본 기동을 확인하고 실제 실행 명령 및 결과를 문서에 기록
+IntelliJ IDEA에서는 이 폴더를 Gradle 프로젝트로 열고 Project SDK와 Gradle JVM을 JDK 21로 지정합니다. JDK가 없다면 IDE의 Download JDK 기능으로 21을 준비할 수 있습니다. IntelliJ 설치와 설정은 이번 작업에서 확인하지 않았습니다.
 
-PostgreSQL, Semgrep, OpenAI 키, Docker는 연동 단계에서 준비합니다. 초기 기동에 필요하도록 미리 연결하지 않습니다. 비밀정보는 코드에 작성하지 않으며 예제 설정에도 실제 값을 넣지 않습니다.
+Windows PowerShell에서 JDK 설치 폴더를 지정한 후 프로젝트 루트에서 실행합니다. 아래 JDK 경로는 실제 설치 경로로 바꿉니다. 이 설정은 현재 터미널에만 적용됩니다.
+
+```powershell
+$env:JAVA_HOME = 'C:\path\to\jdk-21'
+$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+java -version
+javac -version
+.\gradlew.bat test
+.\gradlew.bat bootRun
+```
+
+서버는 기본 포트 8080에서 시작하며 Ctrl+C로 종료합니다. 아직 화면과 컨트롤러가 없으므로 `http://localhost:8080/`의 HTTP 404 응답은 정상입니다. 이는 분석 기능 완료를 뜻하지 않습니다.
+
+실행 가능한 JAR 생성: `.\gradlew.bat bootJar`. 생성한 JAR 실행: `java -jar build/libs/codesentinel-0.0.1-SNAPSHOT.jar`.
+
+macOS/Linux에서는 JDK 21 환경에서 `sh ./gradlew test`, `sh ./gradlew bootRun`을 사용합니다. 해당 운영체제에서는 아직 검증하지 않았습니다.
+
+Windows에서 컨텍스트 테스트 1개와 JAR 빌드·기동을 확인했습니다. OneDrive 폴더에서 빌드 결과 삭제 오류가 발생하면 다른 실행이 종료됐는지와 build 디렉터리의 읽기 전용 속성을 확인합니다.
+
+이번 검증에는 임시 작업 폴더의 Temurin JDK 21을 사용했습니다. 시스템 JAVA_HOME이나 PATH를 영구 변경하지 않았으며 JDK 자체는 저장소에 포함하지 않습니다. 다른 컴퓨터에서도 JDK 21을 별도로 준비해야 합니다.
+
+PostgreSQL, Semgrep, OpenAI 키, Docker는 연동 단계에서 준비합니다. 비밀정보는 코드에 작성하지 않으며 로컬 환경 파일과 설정은 Git에서 제외합니다.
+
+## 다음 단계
+
+기본 화면과 GitHub URL 입력·검증을 작은 단위로 구현합니다. 분석 기능과 외부 연동은 이후 단계입니다.
 
 ## 보안 원칙
 

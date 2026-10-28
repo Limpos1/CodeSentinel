@@ -34,10 +34,20 @@
 - 이유: 다른 컴퓨터에서도 코드와 문서를 기준으로 이어서 작업하기 위해서입니다.
 - 영향: D-002의 초기 작업 중단 이후 이번 작업 범위를 Git 초기화·원격 연결·문서 커밋·푸시로 확장합니다. 서비스 구현과 배포는 포함하지 않습니다.
 
+## D-005: Spring Boot 기본 프로젝트
+
+- 날짜: 2026-10-28
+- 상태: 사용자 다음 단계 진행 승인, 패키지명 com.codesentinel 사용자 지정
+- 내용: group/package `com.codesentinel`, artifact `codesentinel`, Java 21, Spring Boot 4.1.2, Gradle Wrapper 9.8.2, Groovy DSL을 사용합니다.
+- 이유: 공식 Spring Initializr의 안정 버전과 생성 구성을 사용하여 빌드 설정을 단순하게 유지합니다. 공식 시스템 요구사항에서 Java 21과 Gradle 9 지원을 확인했습니다.
+- 의존성: Web MVC, Thymeleaf, Validation 및 각각의 테스트 지원. Boot 4의 모듈별 starter 구성을 따릅니다. 데이터 접근 도구나 AI SDK는 아직 추가하지 않습니다.
+- 검증 환경: SHA-256 검증한 Temurin JDK 21.0.12.1을 임시 작업 폴더에 준비했습니다. 시스템 환경변수는 변경하지 않습니다. Wrapper 배포 파일의 SHA-256도 설정합니다.
+- 테스트 설정: Java 21의 동적 attach 문제를 피하기 위해 Mockito를 테스트 JVM 시작 시 javaagent로 로드합니다. 앱 실행에는 적용하지 않습니다. 공식 안내: https://github.com/mockito/mockito/blob/main/mockito-core/src/main/java/org/mockito/Mockito.java
+- 범위: 시작 클래스, 애플리케이션 이름 설정, 컨텍스트 테스트, 빌드·실행 검증과 문서 동기화만 포함합니다. 후속 사용자 승인으로 기본 프로젝트와 관련 문서의 커밋·푸시를 진행합니다.
+- 참고: https://start.spring.io/ 및 https://docs.spring.io/spring-boot/system-requirements.html
+
 ## 미결정 목록
 
-- 프로젝트 group/package, Spring Boot 및 Gradle 버전
-- 최소 의존성의 실제 구성
 - 저장소 수집 방식과 자원 제한값
 - Semgrep 실행 격리 방식과 규칙 세트
 - 초기 작업 처리 방식과 타임아웃

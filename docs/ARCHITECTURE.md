@@ -1,6 +1,14 @@
 # 시스템 구조
 
-상태: 목표 구조 초안. 아래 구성요소는 모두 미구현입니다.
+상태: 목표 구조 초안. Spring Boot 시작 클래스와 빌드·테스트 구성만 생성했습니다. 아래 분석 흐름의 기능은 모두 미구현입니다.
+
+## 현재 구현
+
+- `com.codesentinel.CodeSentinelApplication`: 자동 설정을 불러오고 내장 웹 서버를 시작합니다. 하위 패키지에 향후 구성요소를 추가합니다.
+- `application.properties`: 애플리케이션 이름만 설정합니다. DB나 외부 API 연결은 없습니다.
+- Gradle Wrapper 9.8.2, Java toolchain 21, Spring Boot 4.1.2.
+- Web MVC는 HTTP 요청 처리, Thymeleaf는 서버 측 HTML 렌더링, Validation은 입력 검증을 위해 준비했습니다. 화면과 컨트롤러는 아직 없습니다.
+- `CodeSentinelApplicationTests`: Spring 컨텍스트를 구성하는 기본 테스트입니다. 기능·보안 테스트를 대신하지 않습니다.
 
 ## 목표 처리 흐름
 
